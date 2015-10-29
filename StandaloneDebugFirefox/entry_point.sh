@@ -9,7 +9,7 @@ function shutdown {
 sudo -E -i -u seluser \
   DISPLAY=$DISPLAY \
   xvfb-run --server-args="$DISPLAY -screen 0 $GEOMETRY -ac +extension RANDR" \
-  java -jar /opt/selenium/selenium-server-standalone.jar ${JAVA_OPTS} &
+  java -jar /opt/selenium/selenium-server-standalone.jar ${JAVA_OPTS}  -maxSession 100 &
 NODE_PID=$!
 
 trap shutdown SIGTERM SIGINT
@@ -25,6 +25,14 @@ done
 
 fluxbox -display $DISPLAY &
 
-x11vnc -forever -usepw -shared -rfbport 5900 -display $DISPLAY &
+#rkotowicz: no password
+x11vnc -forever -shared -rfbport 5900 -display $DISPLAY &
+
+#rkotowicz: xclock
+xclock &
+
+xterm htop &
+
+echo 'export TERM=xterm' >> ~/.bash_profile
 
 wait $NODE_PID

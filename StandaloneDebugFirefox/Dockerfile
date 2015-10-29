@@ -35,6 +35,7 @@ RUN apt-get update -qqy \
     xfonts-75dpi \
     xfonts-cyrillic \
     xfonts-scalable \
+    x11-utils \
   && rm -rf /var/lib/apt/lists/*
 
 #=========
@@ -46,10 +47,21 @@ RUN apt-get update -qqy \
     fluxbox \
   && rm -rf /var/lib/apt/lists/*
 
+
+# rkotowicz - other utils
+RUN apt-get update -qqy \
+  && apt-get -qqy install \
+	htop \
+	vim \  
+  && rm -rf /var/lib/apt/lists/*
+
+
 #==============================
 # Scripts to run Selenium Node
 #==============================
 COPY entry_point.sh /opt/bin/entry_point.sh
+COPY htoprc /root/.config/htop/htoprc
+
 RUN chmod +x /opt/bin/entry_point.sh
 
 EXPOSE 5900
